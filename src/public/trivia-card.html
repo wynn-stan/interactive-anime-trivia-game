@@ -69,7 +69,7 @@
                      
                   </p>
 
-                  <div class="gameControls d-flex justify-content-center">
+                  <div class="gameControls d-flex justify-content-around">
                      <div id="isValid" class="d-flex align-items-center">
                         <canvas id="isValidCanvas" width="38" height="38"></canvas>
                      </div>
@@ -291,6 +291,8 @@
 
         let currentTrivia;
         let next_button = document.getElementById("next_button");
+         let play_button = document.getElementById("play_button");
+
 
         /*
             listen to play_button click event
@@ -310,6 +312,14 @@
 
         function hideNextButton(){
            next_button.style.display = "none";
+        }
+
+        function displayPlayButton(){
+           play_button.style.display = "inline-block";
+        }
+
+        function hidePlayButton(){
+            play_button.style.display = "none";
         }
 
         function setCurrentTrivia(data){
@@ -341,9 +351,11 @@
                create new trivia and set data of card to that value
                
                make next button have a display of none
+               display the playbutton
             When generateTrivia is called 
                create new trivia and set data of card to that value
                make next button have a display of none
+               display the play button
 
         */
 
@@ -352,15 +364,17 @@
            setCurrentTrivia(newTrivia);
            setCardData(newTrivia);
            hideNextButton();
+           displayPlayButton()
            clearCanvas();
 
         }
         
         function generateNextTrivia(){
-            let newTrivia = generateTrivia();
+           let newTrivia = generateTrivia();
            setCurrentTrivia(newTrivia);
            setCardData(newTrivia)
            hideNextButton();
+           displayPlayButton();
            clearCanvas();
        }
 
@@ -419,13 +433,14 @@
         function processWrongAnswer(radio_element){
             drawWrongSymbol();
             unCheckRadio(radio_element);
-
+            displayPlayButton();
         }
 
         function processCorrectAnswer(radio_element){
            drawCorrectSymbol();
            unCheckRadio(radio_element);
            displayNextButton();
+           hidePlayButton();
         }
 
         function unCheckRadio(radio_element){
@@ -434,17 +449,21 @@
 
          function processResponse(){
             const response = getResponse(); 
-            const trivia = getCurrentTrivia();
-            if(response.value == undefined){
-               alert("Please select an answer before tapping Play");
-            }else{
-               let responseIsCorrect = trivia.correct_answer == response.value;
-               if(responseIsCorrect){
-                  processCorrectAnswer(response);
-               }else {
-                  processWrongAnswer(response);
+            let hasResponse = response != undefined;
+            if(hasResponse){
+               const trivia = getCurrentTrivia();
+               if(response.value == undefined){
+                  alert("Please select an answer before tapping Play");
+               }else{
+                  let responseIsCorrect = trivia.correct_answer == response.value;
+                  if(responseIsCorrect){
+                     processCorrectAnswer(response);
+                  }else {
+                     processWrongAnswer(response);
+                  }
                }
             }
+            
          }
 
          function getResponse(){
