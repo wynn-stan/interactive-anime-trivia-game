@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Trivia</title>
+</head>
+<body>
+
+    <canvas id="canvas" width="1000" height="700">
+        
+    </canvas>
+
+    <img src="./assets/michel-tobler-pixel-cannon.jpg" id="cannon" width="50" height="50">
+    
+    <button id="forceButton" >Apply Force</button>
+
+    <script type="text/javascript">
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const forceButton = document.getElementById("forceButton");
+
+        //single responsibility principle
+
+        /*                                
+            all processes
+                launchBall()
+                setBallVelocity()
+                setBallAcceleration()
+                applyGravityAccelerationOnCannonBall()
+                setBallDirection();
+                createNewBall();
+                checkIfBallIsOnGround();
+                animateCanvas();
+                drawBall()
+                drawCannon()
+                drawHoop()
+                drawPlatform()
+                shootBall()
+                calculateDirectionFactor()
+                setBallDirection()
+                setCannonPosition()
+                setPlatformPosition()
+                setShootBallTrigger()
+
+
+            all things
+                velocity
+                acceleration
+                ball
+                cannon
+                platform
+                hoop
+                shootBallTrigger
+                gravityAcceleration
+                world/canvas
+                ballPosition
+                ballDirectionDegrees
+                cannonPosition
+                hoopPosition
+                platformPosition
+                ballDirectionFactor
+
+        */
+
+        /*function World(){
+
+            this.gravityAcceleration = 2;
+
+            this.ball = new Ball();
+
+            this.applyGravityAcceleration = () => {
+
+                //console.log(this.ball.ballIsOnGround);
+
+                if(this.ball.ballIsOnGround == false){
+
+                    // increase  distance travelled every "frame" by gravityAcceleration;
+                    this.ball.increaseInDistanceMovedEveryFrame = this.gravityAcceleration;
+                    this.ball.distanceMovedEveryFrame += this.ball.increaseInDistanceMovedEveryFrame;
+        
+                    let new_ball_position_y = this.ball.position.y + this.ball.distanceMovedEveryFrame;
+
+                    let ballIsNotOnGround = new_ball_position_y < canvas.height - this.ball.radius;
+
+                    if(ballIsNotOnGround){
+                        this.ball.ballIsOnGround = false;
+                        this.ball.position.y = new_ball_position_y;
+                    }else {
+                        this.ball.ballIsOnGround = true;
+                        this.ball.distanceMovedEveryFrame = 0;
+                        this.ball.increaseInDistanceMovedEveryFrame = 0;
+                    }
+
+                }
+
+                
+            } 
+
+            this.animate = () => {
+
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+
+                this.ball.draw();
+                this.applyGravityAcceleration();
+
+                requestAnimationFrame(this.animate);
+            }
+
+            forceButton.addEventListener('click', this.ball.accelerate);
+
+            this.animate();
+        }
+
+
+        function Ball(){
+
+            this.localFrame = 0;
+
+            this.position = {
+                x: 100,
+                y: 100
+            }
+
+            this.ballIsOnGround = false;
+
+            this.radius = 30;
+            this.initialDistanceMovedEveryFrame = 0;
+            this.increaseInDistanceMovedEveryFrame = 0;
+
+            this.distanceMovedEveryFrame = this.initialDistanceMovedEveryFrame + this.increaseInDistanceMovedEveryFrame;
+
+            this.draw = () => {
+
+                console.log(this.ballIsOnGround, this.distanceMovedEveryFrame, this.increaseInDistanceMovedEveryFrame);
+                
+                ctx.beginPath();
+                ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fill();
+            }
+
+            this.accelerate = () => {
+
+                let direction = 300;
+                this.increaseInDistanceMovedEveryFrame = 30;
+
+                let x_direction_factor = Math.cos(direction * (Math.PI / 180));
+                let y_direction_factor = Math.sin(direction * (Math.PI / 180));
+
+                this.distanceMovedEveryFrame += this.increaseInDistanceMovedEveryFrame;
+
+                this.position.x += this.distanceMovedEveryFrame *  x_direction_factor;
+                this.position.y += this.distanceMovedEveryFrame * y_direction_factor;
+
+
+
+                if(this.ballIsOnGround){
+                    this.increaseInDistanceMovedEveryFrame = 0;
+                    this.distanceMovedEveryFrame = 0;
+                } else {
+                    
+                }
+
+            }
+
+        } 
+
+        let newWorld = new World();  */
+
+    </script>
+
+</body>
+</html>
