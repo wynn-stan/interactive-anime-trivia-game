@@ -70,6 +70,9 @@
                   </p>
 
                   <div class="gameControls d-flex justify-content-center">
+                     <div id="isValid" class="d-flex align-items-center">
+                        <canvas id="isValidCanvas" width="38" height="38"></canvas>
+                     </div>
                      <button onclick="processResponse" id="play_button" class="btn btn-primary w-25 align-self-center mx-2">Play</button>
                      <button onclick="processResponse" id="next_button" class="btn btn-primary w-25 align-self-center mx-2">Next</button>
                   </div>
@@ -85,6 +88,64 @@
     <script src="./assets/libraries/react-dom.production.min.js"></script>
 
     <script>
+       // making the correct symbol
+       /*
+            get the canvas context/drawing space
+            plot the points
+            fill with color
+       */
+
+       const canvas = document.getElementById("isValidCanvas");
+       const ctx = canvas.getContext("2d");
+
+      function drawCorrectSymbol(){
+         clearCanvas();
+
+         ctx.beginPath();
+         ctx.moveTo(8,20);
+         ctx.lineTo(18,30);
+         ctx.lineTo(32,10);
+         ctx.lineTo(27,6);
+         ctx.lineTo(18,19);
+         ctx.lineTo(13,13);
+         ctx.lineTo(8,20);
+
+         ctx.stroke();
+         ctx.fill();
+      }
+
+      function drawWrongSymbol(){
+
+         clearCanvas();
+
+         ctx.beginPath();
+         ctx.moveTo(2,8);
+         ctx.lineTo(9,1);
+         ctx.lineTo(19,11);
+         ctx.lineTo(29,1);
+         ctx.lineTo(36,8);
+
+         ctx.lineTo(26,18);
+         ctx.lineTo(36,28);
+         ctx.lineTo(29,35);
+         ctx.lineTo(19,25);
+         ctx.lineTo(9, 35);
+         ctx.lineTo(2, 28);
+         ctx.lineTo(12,18);
+         ctx.lineTo(2, 8);
+
+         ctx.fill();
+      }
+
+      function clearCanvas(){
+         ctx.clearRect(0,0,canvas.width, canvas.height);
+      }
+
+
+    </script>
+
+    <script>
+
         //rgb(134, 142, 150);
        let jsonData = JSON.stringify({
             "response_code":0,
@@ -260,15 +321,16 @@
         }
 
         function generateTrivia(){
-
-            console.log(availableTrivia);
             
             let randomNumber = Math.round(Math.random() * (availableTrivia.length - 1));
-            reduceAvailableTrivia(randomNumber);
-
-            let trivia = triviaData.results[randomNumber];
+            let selectedTrivia = availableTrivia[randomNumber]
+            let trivia = triviaData.results[selectedTrivia];
             trivia.allAnswers = trivia.incorrect_answers;
             trivia.allAnswers.push(trivia.correct_answer);
+
+            reduceAvailableTrivia(randomNumber);
+
+            console.log(availableTrivia);
 
             return trivia;
 
@@ -288,8 +350,9 @@
         window.onload = (e) => {
            let newTrivia = generateTrivia();
            setCurrentTrivia(newTrivia);
-           setCardData(newTrivia)
+           setCardData(newTrivia);
            hideNextButton();
+           clearCanvas();
 
         }
         
@@ -298,6 +361,7 @@
            setCurrentTrivia(newTrivia);
            setCardData(newTrivia)
            hideNextButton();
+           clearCanvas();
        }
 
          /*
@@ -339,14 +403,27 @@
             
         */
 
+        /*
+            if answer is wrong, 
+               drawWrongSymbol on canvas
+               
+            if answer is right, 
+               drawCorrectSymbol on canvas
+
+            if generateNextTrivia is called
+               clearCanvas
+            when window loads 
+               clearCanvas
+        */
+
         function processWrongAnswer(radio_element){
-           alert('Wrong Answer');
-           unCheckRadio(radio_element);
+            drawWrongSymbol();
+            unCheckRadio(radio_element);
 
         }
 
         function processCorrectAnswer(radio_element){
-           alert("Correct Answer");
+           drawCorrectSymbol();
            unCheckRadio(radio_element);
            displayNextButton();
         }
