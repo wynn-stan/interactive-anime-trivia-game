@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Card</title>
+
+    <link rel="stylesheet" href="./assets/libraries/bootstrap.min.css">
+
+    <style type="text/css">
+
+       body {
+          background-color: #c2c5ca;
+       }
+
+        #card-container {
+            width: 340px;
+        }
+
+        div.card-question {
+            background-color: #7a818a;
+            color:white;
+        }
+
+        div.answer-choice label {
+           padding-left: 15px;
+        }
+
+        div.answer-choice {
+           padding: 10px ;
+        }
+
+      </style>
+
+</head>
+<body>
+
+   <!--
+      Create new div container to house everything
+   -->
+
+      <div class="main container">
+
+      <div id="card-container" class="col container mt-2 d-flex justify-content-center">
+               <div class="card w-100">
+               
+                  <div class="card-question p-5"></div>
+
+               
+                  <div class="card-body d-flex flex-column ">
+                     <p class="card-answers">
+                     <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-1">
+                           <label for="choice-1"></label>
+                     </div>
+                        <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-2">
+                           <label for="choice-2"></label>
+                     </div>
+                     <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-3">
+                           <label for="choice-3"></label>
+                     </div>
+                        <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-4">
+                           <label for="choice-4"></label>
+                     </div>
+                     
+                  </p>
+
+                  <div class="gameControls d-flex justify-content-center">
+                     <button onclick="processResponse" id="play_button" class="btn btn-primary w-25 align-self-center mx-2">Play</button>
+                     <button onclick="processResponse" id="next_button" class="btn btn-primary w-25 align-self-center mx-2">Next</button>
+                  </div>
+               
+               </div>
+            </div>
+      </div>
+
+
+   </div>
+
+    <script src="./assets/libraries/react.production.min.js"></script>
+    <script src="./assets/libraries/react-dom.production.min.js"></script>
+
+    <script>
+        //rgb(134, 142, 150);
+       let jsonData = JSON.stringify({
+            "response_code":0,
+            "results":[
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"hard",
+                  "question":"In the anime Initial D, how does Takumi Fujiwara describe a drift?",
+                  "correct_answer":"&#039;. . . the front tires slide so the car won&#039;t face the inside&#039;",
+                  "incorrect_answers":[
+                     "&#039;. . . the wheels lose traction, making the car slide sideways&#039;",
+                     "&#039;. . . the car oversteers through a curve, causing it to turn faster&#039;",
+                     "&#039;. . . you turn a lot&#039;"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"easy",
+                  "question":"Who is the main character with yellow hair in the anime Naruto?",
+                  "correct_answer":"Naruto",
+                  "incorrect_answers":[
+                     "Ten Ten",
+                     "Sasuke",
+                     "Kakashi"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"easy",
+                  "question":"Which of the following originated as a manga?",
+                  "correct_answer":"Akira",
+                  "incorrect_answers":[
+                     "Cowboy Bebop",
+                     "High School DxD",
+                     "Gurren Lagann"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"hard",
+                  "question":"In &quot;One Piece&quot;, what does &quot;the Pirate King&quot; mean to the captain of the Straw Hat Pirates?",
+                  "correct_answer":"Freedom",
+                  "incorrect_answers":[
+                     "Promise",
+                     "Adventure",
+                     "Friendship"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"hard",
+                  "question":"Which person from &quot;JoJo&#039;s Bizarre Adventure&quot; does NOT house a reference to a band, artist, or song earlier than 1980?",
+                  "correct_answer":"Giorno Giovanna",
+                  "incorrect_answers":[
+                     "Josuke Higashikata",
+                     "Jolyne Cujoh",
+                     "Johnny Joestar"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"medium",
+                  "question":"In &quot;To Love-Ru: Darkness&quot;, which of the girls attempt making a harem for Rito Yuuki?",
+                  "correct_answer":"Momo Deviluke",
+                  "incorrect_answers":[
+                     "Yami (Golden Darkness)",
+                     "Haruna Sairenji",
+                     "Mea Kurosaki"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"medium",
+                  "question":"In Pok&eacute;mon Chronicles, why was Misty afraid of Gyarados?",
+                  "correct_answer":"She crawled into it&#039;s mouth as a baby.",
+                  "incorrect_answers":[
+                     "She found it scary.",
+                     "She was badly injured from it.",
+                     "It is part Bug."
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"easy",
+                  "question":"In Ms. Kobayashi&#039;s Dragon Maid, who is Kobayashi&#039;s maid?",
+                  "correct_answer":"Tohru",
+                  "incorrect_answers":[
+                     "Lucoa",
+                     "Kanna",
+                     "Elma"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"medium",
+                  "question":"Who is the main character in One Piece?",
+                  "correct_answer":"Luffy",
+                  "incorrect_answers":[
+                     "Shanks",
+                     "Zoro",
+                     "Smoker"
+                  ]
+               },
+               {
+                  "category":"Entertainment: Japanese Anime & Manga",
+                  "type":"multiple",
+                  "difficulty":"medium",
+                  "question":"Which of the following films was NOT directed by Hayao Miyazaki?",
+                  "correct_answer":"Wolf Children",
+                  "incorrect_answers":[
+                     "Princess Mononoke",
+                     "Spirited Away",
+                     "Kiki&#039;s Delivery Service"
+                  ]
+               }
+            ]
+         });
+        
+      /*
+        Generating Trivia // setting the data for the current trivia
+         set an array to store numbers from 0 to that of the number of responses in the json
+         select a random number from 0 to the number of elements in the array - 1
+         remove the element at availableTrivia[random_numuber]
+            use availableTrivia.splice(random_number, 1)
+               starting at index random_number, remove 1 element, i.e. itself
+         select the element at array[random_number]
+         set trivia object to that value
+         set new property trivia.allAnswers = trivia.incorrect_answers.
+            trivia.allAnswers.push(trvia.correct_answers)
+      */
+
+        let triviaData = JSON.parse(jsonData);
+        let availableTrivia = [0,1,2,3,4,5,6,7,8,9];
+
+        let currentTrivia;
+        let next_button = document.getElementById("next_button");
+
+        /*
+            listen to play_button click event
+            listen to next_button click event
+        */
+
+         function addEventHandlersToButtons(){
+            document.getElementById("next_button").addEventListener("click", generateNextTrivia);
+            document.getElementById("play_button").addEventListener("click", processResponse);
+         }
+
+         addEventHandlersToButtons();         
+
+        function displayNextButton(){
+           next_button.style.display = "inline-block";
+        }
+
+        function hideNextButton(){
+           next_button.style.display = "none";
+        }
+
+        function setCurrentTrivia(data){
+            currentTrivia = data;
+        }
+
+        function reduceAvailableTrivia(index){
+           availableTrivia.splice(index,1);
+        }
+
+        function generateTrivia(){
+
+            console.log(availableTrivia);
+            
+            let randomNumber = Math.round(Math.random() * (availableTrivia.length - 1));
+            reduceAvailableTrivia(randomNumber);
+
+            let trivia = triviaData.results[randomNumber];
+            trivia.allAnswers = trivia.incorrect_answers;
+            trivia.allAnswers.push(trivia.correct_answer);
+
+            return trivia;
+
+        }
+       
+        /*
+            When page loads 
+               create new trivia and set data of card to that value
+               
+               make next button have a display of none
+            When generateTrivia is called 
+               create new trivia and set data of card to that value
+               make next button have a display of none
+
+        */
+
+        window.onload = (e) => {
+           let newTrivia = generateTrivia();
+           setCurrentTrivia(newTrivia);
+           setCardData(newTrivia)
+           hideNextButton();
+
+        }
+        
+        function generateNextTrivia(){
+            let newTrivia = generateTrivia();
+           setCurrentTrivia(newTrivia);
+           setCardData(newTrivia)
+           hideNextButton();
+       }
+
+         /*
+            trivia processing mechanics.
+            if answer picked is the same as correct answer, give 3 points
+            1 wrong - 2 points
+            2 wrongs - 1 points
+            3 wrongs - 0 points
+            if you score 0 or you pick the right answer, change the card data
+
+            set initial score to 0
+            when play button is pressed, call processAnswer function
+            to process response, get the response            
+               - get all radio elements
+               - for each radio, check if it is checked.
+               - return the value of the one that is checked
+               - if none are checked, alert to select an answer before tapping play
+            check if response is the same as the correctAnswer
+               if yes
+                  alert correct answer
+                  display the next button
+               if no, 
+                  alert wrong answer
+         */
+
+
+        function getCurrentTrivia(){
+           return currentTrivia;
+        }
+
+        /*
+            processing wrong answers 
+               alert wrong answer
+               uncheck the selected answers
+            processing right answers 
+               alert right answers
+               unchec the selected answers
+               displya next button
+            
+        */
+
+        function processWrongAnswer(radio_element){
+           alert('Wrong Answer');
+           unCheckRadio(radio_element);
+
+        }
+
+        function processCorrectAnswer(radio_element){
+           alert("Correct Answer");
+           unCheckRadio(radio_element);
+           displayNextButton();
+        }
+
+        function unCheckRadio(radio_element){
+           radio_element.checked = false;
+        }
+
+         function processResponse(){
+            const response = getResponse(); 
+            const trivia = getCurrentTrivia();
+            if(response.value == undefined){
+               alert("Please select an answer before tapping Play");
+            }else{
+               let responseIsCorrect = trivia.correct_answer == response.value;
+               if(responseIsCorrect){
+                  processCorrectAnswer(response);
+               }else {
+                  processWrongAnswer(response);
+               }
+            }
+         }
+
+         function getResponse(){
+            let radio_elements = document.getElementsByName("choice");
+            let selectedAnswer;
+            for(i = 0; i < radio_elements.length; i++){
+               if(radio_elements[i].checked){
+                  selectedAnswer = radio_elements[i];
+                  break;
+               }
+            }
+            return selectedAnswer;
+         }
+
+         /*
+            set the data of the card
+
+            get card question element
+            set it's inner html to that of {triviaQuestion}
+            get all input elements grouped under choice
+            get all input_labels
+            for i = 0 to input_elements.length
+               set the value property of the input_element[i] to that of choice[i]
+               set the innerHTML property of the input_label_element[i] to that of choice[i]
+         */
+
+         function setCardData(trivia){
+            let card_question_element = document.getElementsByClassName("card-question")[0];
+            card_question_element.innerHTML = trivia.question;
+
+            let input_elements = document.getElementsByName("choice");
+            let input_labels = document.getElementsByTagName("label");
+            for(i = 0; i < input_elements.length; i++){
+               input_elements[i].value = trivia.allAnswers[i];
+               input_labels[i].innerHTML = trivia.allAnswers[i];
+            }
+         }
+      
+    </script>
+
+    <script>
+       
+    </script>
+</body>
+</html>
