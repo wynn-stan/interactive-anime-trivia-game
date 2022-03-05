@@ -12,162 +12,207 @@
         
     </canvas>
 
-    <img src="./assets/michel-tobler-pixel-cannon.jpg" id="cannon" width="50" height="50">
-    
-    <button id="forceButton" >Apply Force</button>
+    <button id="forceButton" onclick="ballIsShot()" >Move ball</button>
 
     <script type="text/javascript">
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
 
         const forceButton = document.getElementById("forceButton");
+       
+       let ballRadius = 20;
 
-        //single responsibility principle
+       let ballPosition = {}; 
 
-        /*                                
-            all processes
-                launchBall()
-                setBallVelocity()
-                setBallAcceleration()
-                applyGravityAccelerationOnCannonBall()
-                setBallDirection();
-                createNewBall();
-                checkIfBallIsOnGround();
-                animateCanvas();
-                drawBall()
-                drawCannon()
-                drawHoop()
-                drawPlatform()
-                shootBall()
-                calculateDirectionFactor()
-                setBallDirection()
-                setCannonPosition()
-                setPlatformPosition()
-                setShootBallTrigger()
+       /*
+            when canvas loads, set initial ball position
+       */
+       
+       function setInitialBallPosition(){
 
+           ballPosition.x = ballRadius + 10;
+           ballPosition.y = canvas.height - ballRadius;
 
-            all things
-                velocity
-                acceleration
-                ball
-                cannon
-                platform
-                hoop
-                shootBallTrigger
-                gravityAcceleration
-                world/canvas
-                ballPosition
-                ballDirectionDegrees
-                cannonPosition
-                hoopPosition
-                platformPosition
-                ballDirectionFactor
+       }
 
-        */
+       setInitialBallPosition()
 
-        /*function World(){
+       function drawBall(){
+           
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(ballPosition.x, ballPosition.y, ballRadius, 0, (Math.PI * 2), false);
+            ctx.fill();
 
-            this.gravityAcceleration = 2;
+       }
+          
+       let x_velocityFactor = 0;
+       let y_velocityFactor = 0;
 
-            this.ball = new Ball();
+       let x_accelerateFactor = 0;
+       let y_accelerateFactor = 0;
 
-            this.applyGravityAcceleration = () => {
+       let gravityAcceleration = 0.2;
 
-                //console.log(this.ball.ballIsOnGround);
+       /*
+            accelerate factor is increase it's velocity
+       */
 
-                if(this.ball.ballIsOnGround == false){
+       function setVelocityFactor(x,y){
+            x_velocityFactor = x;
+            y_velocityFactor = y;
+       }
 
-                    // increase  distance travelled every "frame" by gravityAcceleration;
-                    this.ball.increaseInDistanceMovedEveryFrame = this.gravityAcceleration;
-                    this.ball.distanceMovedEveryFrame += this.ball.increaseInDistanceMovedEveryFrame;
-        
-                    let new_ball_position_y = this.ball.position.y + this.ball.distanceMovedEveryFrame;
+       function setAccelerationFactor(x,y){
+            x_accelerateFactor = x;
+            y_accelerateFactor = y;
+       }
 
-                    let ballIsNotOnGround = new_ball_position_y < canvas.height - this.ball.radius;
+       function accelerate(x_acceleration, y_acceleration){
+           x_velocityFactor += x_acceleration;
+           y_velocityFactor += y_acceleration;
+       }
 
-                    if(ballIsNotOnGround){
-                        this.ball.ballIsOnGround = false;
-                        this.ball.position.y = new_ball_position_y;
-                    }else {
-                        this.ball.ballIsOnGround = true;
-                        this.ball.distanceMovedEveryFrame = 0;
-                        this.ball.increaseInDistanceMovedEveryFrame = 0;
-                    }
+       function isBallOnGround(){
+           let ground = canvas.height - ballRadius - 1;
+           let validity = ballPosition.y >= ground;
+           return validity;
+       }
 
-                }
+       function stopMovingBallDownwards(){
+            y_velocityFactor = 0;
+       }
 
-                
-            } 
+       let isBallShot = false;
 
-            this.animate = () => {
+       function ballIsShot(){
+           isBallShot = true;
+           setVelocityFactor(2, -12);
 
-                ctx.clearRect(0,0,canvas.width, canvas.height);
+       }
 
-                this.ball.draw();
-                this.applyGravityAcceleration();
+       /*
+            stop ball when it touches the ground
+                every frame
+                    check if ball has touched ground
+                        if yes, 
+                            stop ball from moving downwards
+       */
 
-                requestAnimationFrame(this.animate);
-            }
+       function animateBall(){
 
-            forceButton.addEventListener('click', this.ball.accelerate);
+           drawBall();
 
-            this.animate();
-        }
+           if(isBallShot == true){
+                moveBall45Deg();
+                stopBallBoomerangShot();
+           }
 
+           if(isBallOnGround() == true){
+                stopMovingBallDownwards();
+                isBallShot = false;
+           }
 
-        function Ball(){
+           requestAnimationFrame(animateBall);
+       }
 
-            this.localFrame = 0;
+       function moveBall(param_x_factor, param_y_factor){
+            ballPosition.x +=  param_x_factor;
+            ballPosition.y += param_y_factor;
+       }
 
-            this.position = {
-                x: 100,
-                y: 100
-            }
+       /*
+            set new velocity/factor
+       */
 
-            this.ballIsOnGround = false;
+       animateBall();
 
-            this.radius = 30;
-            this.initialDistanceMovedEveryFrame = 0;
-            this.increaseInDistanceMovedEveryFrame = 0;
+       /*
+            shoot ball 45deg
+                when shootball button is pressed, set velocity to 2;
+                every frame, 
+                check if the shootball button is presssed, then
+                        move ball
+                            increase ballPosition.x by velocityFactor;
+                            increase ballPosition.y by velocityFactor;
 
-            this.distanceMovedEveryFrame = this.initialDistanceMovedEveryFrame + this.increaseInDistanceMovedEveryFrame;
+                        decelerate ball
+                            every frame,
+                            decrease ballVelocity by decelerationFactor;
+                                let x_velocityFactor -= decelerationFactor;
+                                let y_velocityFactor -= decelerationFactor;
+                                reduce ball position due to deceleration;
+                                    let ballPosition.x -= x_velocityFactor
+                                    same for y
+                        
+                        move ball downwards because of gravity
+                            every frame, 
+                                decrease ball velocity by gravity
+                                    set deceleration factor to that of gravity
+                                    let y_velocityfactor += -decelerationFactor;
+                                increase ball-y-position by velocituy
+                                    let ballPosition.y += y_velocityfactor
+       */
 
-            this.draw = () => {
+       function moveBall45Deg(){
 
-                console.log(this.ballIsOnGround, this.distanceMovedEveryFrame, this.increaseInDistanceMovedEveryFrame);
-                
-                ctx.beginPath();
-                ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
-                ctx.fill();
-            }
+                moveBall(x_velocityFactor, y_velocityFactor);
 
-            this.accelerate = () => {
+                let isXVelocity0 = x_velocityFactor >= -0.01 && x_velocityFactor <= 0.01;
 
-                let direction = 300;
-                this.increaseInDistanceMovedEveryFrame = 30;
-
-                let x_direction_factor = Math.cos(direction * (Math.PI / 180));
-                let y_direction_factor = Math.sin(direction * (Math.PI / 180));
-
-                this.distanceMovedEveryFrame += this.increaseInDistanceMovedEveryFrame;
-
-                this.position.x += this.distanceMovedEveryFrame *  x_direction_factor;
-                this.position.y += this.distanceMovedEveryFrame * y_direction_factor;
-
-
-
-                if(this.ballIsOnGround){
-                    this.increaseInDistanceMovedEveryFrame = 0;
-                    this.distanceMovedEveryFrame = 0;
+                if(isXVelocity0 == true){
+                    setAccelerationFactor(0, y_accelerateFactor);
+                    decelerateBall(x_accelerateFactor, y_accelerateFactor)
                 } else {
-                    
+                    setAccelerationFactor(0, 0.2);
+                    decelerateBall(x_accelerateFactor, y_accelerateFactor);
                 }
+                
 
-            }
+                moveBallDownwardsWithGravity();
+       }
 
-        } 
+       function decelerateBall(x,y){
 
-        let newWorld = new World();  */
+           x_velocityFactor += x;
+           y_velocityFactor += y;
+
+           moveBall(x_velocityFactor, y_velocityFactor)
+
+       }
+
+       function moveBallDownwardsWithGravity(){ 
+            setAccelerationFactor(x_accelerateFactor, gravityAcceleration);
+            decelerateBall(0, y_accelerateFactor);
+       }
+
+       function stopBallBoomerangShot(){
+
+           let isXVelocity0 = x_velocityFactor >= -0.01 && x_velocityFactor <= 0.01;
+
+           if(isXVelocity0 == true){
+               stopMovingBallBackwards();
+           }
+
+       }
+
+       function stopMovingBallBackwards(){
+           console.log(x_accelerateFactor);
+           setAccelerationFactor(0, y_accelerateFactor);
+       }
+
+       
+
+       /*
+            stop ball from moving 45degs backwards and downwards
+                every frame
+                    check if ball velocity x reaches 0;
+                        if yes, 
+                            stop decelerating x velocity
+                    check if ball y velocity is 0, 
+                            stop decelerating y velocity;
+       */
+       stopBallBoomerangShot();
 
     </script>
 
