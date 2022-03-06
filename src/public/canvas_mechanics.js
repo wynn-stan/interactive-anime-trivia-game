@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Trivia</title>
-</head>
-<body>
+        const gameCanvas = document.getElementById("canvas");
+        const gameCtx = gameCanvas.getContext("2d");
 
-    <canvas id="canvas" width="1000" height="700">
-        
-    </canvas>
-
-    <button id="forceButton" onclick="ballIsShot()" >Move ball</button>
-
-    <script type="text/javascript">
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-
-        const forceButton = document.getElementById("forceButton");
-       
        let ballRadius = 20;
 
        let ballPosition = {}; 
@@ -31,7 +12,7 @@
        function setInitialBallPosition(){
 
            ballPosition.x = ballRadius + 10;
-           ballPosition.y = canvas.height - ballRadius;
+           ballPosition.y = gameCanvas.height - ballRadius;
 
        }
 
@@ -39,10 +20,10 @@
 
        function drawBall(){
            
-            ctx.clearRect(0,0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.arc(ballPosition.x, ballPosition.y, ballRadius, 0, (Math.PI * 2), false);
-            ctx.fill();
+            gameCtx.clearRect(0,0, gameCanvas.width, gameCanvas.height);
+            gameCtx.beginPath();
+            gameCtx.arc(ballPosition.x, ballPosition.y, ballRadius, 0, (Math.PI * 2), false);
+            gameCtx.fill();
 
        }
           
@@ -53,6 +34,34 @@
        let y_accelerateFactor = 0;
 
        let gravityAcceleration = 0.2;
+
+       /**
+         * Draw the cannon every frame at the ball position;
+         *      create new image and set its source
+         *      when image loads, draw cannon for the first time, then drawBall();
+         *          let cannonPosition. x = ballPosition.x - r
+         *          .y = ballPosition.y - r
+         *          let height = 2 * r
+         *          let width = 2 *r 
+         *      every frame, draw the ball
+         *          ctx.drawImage()
+         */
+
+       let cannonImage = new Image();
+       cannonImage.src = "./michel-tobler-pixel-cannon.jpg";
+       cannonImage.onload = drawCannon;
+
+       let cannonPosition = {
+               x: ballPosition.x - (ballRadius + 10),
+               y: ballPosition.y - (ballRadius + 10)
+           }
+
+        let cannonHeight = (2 * ballRadius) + 10;
+        let cannonWidth =  (2 * ballRadius) + 10;
+
+       function drawCannon(){
+           gameCtx.drawImage(cannonImage, cannonPosition.x, cannonPosition.y, cannonWidth, cannonHeight );
+       }
 
        /*
             accelerate factor is increase it's velocity
@@ -74,7 +83,7 @@
        }
 
        function isBallOnGround(){
-           let ground = canvas.height - ballRadius - 1;
+           let ground = gameCanvas.height - ballRadius - 1;
            let validity = ballPosition.y >= ground;
            return validity;
        }
@@ -87,7 +96,7 @@
 
        function ballIsShot(){
            isBallShot = true;
-           setVelocityFactor(2, -12);
+           setVelocityFactor(2, -9);
 
        }
 
@@ -100,8 +109,9 @@
        */
 
        function animateBall(){
-
+        
            drawBall();
+           drawCannon();
 
            if(isBallShot == true){
                 moveBall45Deg();
@@ -212,9 +222,37 @@
                     check if ball y velocity is 0, 
                             stop decelerating y velocity;
        */
-       stopBallBoomerangShot();
 
-    </script>
+       /*
+            every 2 seconds, shhot ball
+                set timer for 2 seonds
+                when time set, isbalshot to true
+            after 3rd shot, wait 2 sec areset ball position
+                measurre how many shots so far,
+                if shots == 3, 
+                reset ball position, set 3 shots to false
+       */
 
-</body>
-</html>
+       setInterval(moveBall45DegWithTimer, 2000);
+
+       let numberOfShots = 0;
+
+       function moveBall45DegWithTimer(){
+            numberOfShots++;
+
+            if(numberOfShots == 4) {
+                process4thShot();
+                numberOfShots = 0;
+                };
+
+            ballIsShot();
+
+            console.log(numberOfShots)
+
+        }
+
+        function process4thShot(){
+            setInitialBallPosition();
+        }
+
+       

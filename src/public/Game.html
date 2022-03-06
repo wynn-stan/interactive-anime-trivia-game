@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Card</title>
+
+    <link rel="stylesheet" href="./bootstrap.min.css">
+
+    <style type="text/css">
+
+       body {
+          height: 100vh;
+       }
+
+       body {
+          background-color: #c2c5ca;
+       }
+
+        #card-container {
+            max-width: 340px;
+        }
+
+        div.card-question {
+            background-color: #7a818a;
+            color:white;
+        }
+
+        div.answer-choice label {
+           padding-left: 15px;
+        }
+
+        div.answer-choice {
+           padding: 10px ;
+        }
+
+        #canvas {
+           max-width: 100%;
+           max-height: 100%;
+        }
+
+        
+      </style>
+
+</head>
+<body class="d-flex align-items-center">
+
+   <!--
+      Create new div container to house everything
+   -->
+
+      <div class="main container-fluid row d-flex m-auto justify-content-center">
+
+      <div class="col-8 my-2">
+         <canvas id="canvas" width="1000" height="400">
+         </canvas>
+      </div>
+
+      <div id="card-container" class="col-md-4 container d-flex justify-content-center">
+               <div class="card w-100">
+               
+                  <div class="card-question p-5"></div>
+
+               
+                  <div class="card-body d-flex flex-column ">
+                     <p class="card-answers">
+                     <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-1">
+                           <label for="choice-1"></label>
+                     </div>
+                        <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-2">
+                           <label for="choice-2"></label>
+                     </div>
+                     <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-3">
+                           <label for="choice-3"></label>
+                     </div>
+                        <div class="answer-choice d-flex">
+                           <input type="radio" name="choice" id="choice-4">
+                           <label for="choice-4"></label>
+                     </div>
+                     
+                  </p>
+
+                  <div class="gameControls d-flex justify-content-around">
+                     <div id="isValid" class="d-flex align-items-center">
+                        <canvas id="isValidCanvas" width="38" height="38"></canvas>
+                     </div>
+                     <button onclick="processResponse" id="play_button" class="btn btn-primary align-self-center mx-2">Play</button>
+                     <button onclick="processResponse" id="next_button" class="btn btn-primary align-self-center mx-2">Next</button>
+                  </div>
+               
+               </div>
+            </div>
+      </div>
+
+
+   </div>
+
+    <script src="trivia_card_mechanics.js">
+      
+    </script>
+
+    <script src="canvas_mechanics.js"></script>
+
+    <script>
+       
+    </script>
+</body>
+</html>
